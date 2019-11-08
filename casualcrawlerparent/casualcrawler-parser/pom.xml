@@ -5,26 +5,32 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.casualsource.casualcrawler</groupId>
         <artifactId>casualcrawler-parent</artifactId>
+        <groupId>com.casualsource.casualcrawler</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>casualcrawler-requests</artifactId>
-    <name>Casualcrawler Requests</name>
+    <artifactId>casualcrawler-parser</artifactId>
+    <name>Casualcrawler Parser</name>
 
     <dependencies>
 
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
+            <groupId>com.casualsource.casualcrawler</groupId>
+            <artifactId>casualcrawler-requests</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -54,5 +60,5 @@
             </plugin>
         </plugins>
     </build>
-    
+
 </project>

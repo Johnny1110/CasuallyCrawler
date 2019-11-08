@@ -13,6 +13,7 @@
     <modules>
         <module>casualcrawler-requests</module>
         <module>casualcrawler-pttcrawler</module>
+        <module>casualcrawler-parser</module>
     </modules>
 
     <properties>
