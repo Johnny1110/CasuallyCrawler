@@ -2,36 +2,63 @@ package com.casualsource.casualcrawler.datawriter.DataWriterImpl;
 
 import com.casualsource.casualcrawler.datawriter.DataWriter;
 import com.casualsource.casualcrawler.datawriter.DataWriterImpl.JdbcWriterEtc.DataBaseInfo;
-import com.casualsource.casualcrawler.datawriter.DataWriterImpl.JdbcWriterEtc.JdbcUtils;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.casualsource.casualcrawler.datawriter.DataWriterImpl.JdbcWriterEtc.JdbcTemplateConfig;
+import com.casualsource.casualcrawler.datawriter.MetaData;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 
-import javax.sql.DataSource;
-import java.beans.PropertyVetoException;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.List;
 
-public class GenericJdbcDataWriter implements DataWriter {
-    private DataBaseInfo dbInfo;
-
-    GenericJdbcDataWriter(DataBaseInfo dbInfo){
-        this.dbInfo = dbInfo;
+public class GenericJdbcDataWriter{
+    GenericJdbcDataWriter(DataBaseInfo dataBaseInfo){
+        JdbcTemplateConfig.setDriver(dataBaseInfo.getJdbcDriver());
+        JdbcTemplateConfig.setUsername(dataBaseInfo.getUsername());
+        JdbcTemplateConfig.setPassword(dataBaseInfo.getPasswd());
+        JdbcTemplateConfig.setUrl(dataBaseInfo.getUrl());
     }
 
     public JdbcDataWriter bulid(){
         return new JdbcDataWriter();
     }
 
-    private class JdbcDataWriter{
-        private DataSource dataSource;
+    private class JdbcDataWriter implements DataWriter<MetaData>{
+        private JdbcOperations jdbcOperations;
 
-        JdbcDataWriter(){
-            dataSource = JdbcUtils.getDataSource(dbInfo);
+        private JdbcDataWriter(){
+            ApplicationContext ctx = new AnnotationConfigApplicationContext(JdbcTemplateConfig.class);
+            this.jdbcOperations = ctx.getBean(JdbcOperations.class);
         }
 
-        public void test() throws SQLException {
-            Connection connection = dataSource.getConnection();
-        }
 
+        @Override
+        public void createTable(List<MetaData> list) {
+            StringBuilder createStat = new StringBuilder();
+            StringBuilder dropIfExists = new StringBuilder();
+            dropIfExists.append("drop table if exists ")
+                    .append(list.get(0).getTableName())
+                    .append(";");
+
+            createStat.append("create table ")
+              .append(list.get(0).getTableName())
+              .append("(");
+            for (int i = 0; i < list.size(); ++i) {
+                MetaData m = list.get(i);
+                createStat.append(m.getColumnName()).append(" ");
+                createStat.append(m.getColumnProp());
+                if (m.getColumnProp().equals("VARCHAR")) {
+                    createStat.append("(").append(m.getLength()).append(")");
+                }
+                if(i < list.size()-1){
+                    createStat.append(", ");
+                }
+            }
+            createStat.append(");");
+
+            jdbcOperations.execute(dropIfExists.toString());
+            jdbcOperations.execute(createStat.toString());
+        }
     }
 
 }

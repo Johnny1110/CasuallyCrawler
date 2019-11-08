@@ -1,4 +1,7 @@
 package com.casualsource.casualcrawler.datawriter;
 
-public interface DataWriter {
+import java.util.List;
+
+public interface DataWriter<T> {
+    void createTable(List<MetaData> metaDataList);
 }

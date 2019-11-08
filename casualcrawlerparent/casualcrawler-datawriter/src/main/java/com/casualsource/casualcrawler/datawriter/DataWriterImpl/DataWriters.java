@@ -5,7 +5,7 @@ import com.casualsource.casualcrawler.datawriter.DataWriterImpl.JdbcWriterEtc.Da
 public class DataWriters {
     private DataWriters(){}
 
-    public static GenericJdbcDataWriter genericJdbcDataWriter(DataBaseInfo dbInfo){
-        return new GenericJdbcDataWriter(dbInfo);
+    public static GenericJdbcDataWriter genericJdbcDataWriter(DataBaseInfo dataBaseInfo){
+        return new GenericJdbcDataWriter(dataBaseInfo);
     }
 }
