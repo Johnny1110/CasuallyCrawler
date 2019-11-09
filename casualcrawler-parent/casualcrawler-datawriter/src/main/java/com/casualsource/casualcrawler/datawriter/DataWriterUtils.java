@@ -12,7 +12,7 @@ public class DataWriterUtils {
 
     public static List<MetaData> reflectDataColumn(Class<? extends Object> data){
         String tableName = data.getAnnotation(Table.class).name();
-        List<Field> fields = Arrays.asList(data.getFields());
+        List<Field> fields = Arrays.asList(data.getDeclaredFields());
         List<MetaData> metaDataList = new ArrayList<>();
         fields.forEach(f ->{
             MetaData metaData = new MetaData();
@@ -25,4 +25,30 @@ public class DataWriterUtils {
         });
         return metaDataList;
     }
+
+    public static String genericInsertSql(Class<?> clazz){
+        List<MetaData> metaDataList = reflectDataColumn(clazz);
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO ")
+                .append(metaDataList.get(0).getTableName())
+                .append("(");
+        for(int i = 0; i < metaDataList.size(); ++i){
+            sql.append(metaDataList.get(i).getColumnName());
+            if(i < metaDataList.size() - 1){
+                sql.append(", ");
+            }
+        }
+        sql.append(")")
+                .append("VALUES")
+                .append("(");
+        for(int i = 0; i < metaDataList.size(); ++i){
+            sql.append("?");
+            if(i < metaDataList.size() - 1){
+                sql.append(", ");
+            }
+        }
+        sql.append(");");
+        return sql.toString();
+    }
+
 }

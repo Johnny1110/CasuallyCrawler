@@ -3,5 +3,7 @@ package com.casualsource.casualcrawler.datawriter;
 import java.util.List;
 
 public interface DataWriter<T> {
-    void createTable(List<MetaData> metaDataList);
+    void createStorage(Class<? extends Object> clazz);
+
+    int[] writeData(List<T> entityList);
 }
