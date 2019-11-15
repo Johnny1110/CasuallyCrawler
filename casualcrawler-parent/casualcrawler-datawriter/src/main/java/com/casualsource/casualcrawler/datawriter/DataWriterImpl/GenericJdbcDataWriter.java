@@ -13,9 +13,7 @@ import org.springframework.jdbc.core.JdbcOperations;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
 public class GenericJdbcDataWriter{
@@ -73,7 +71,6 @@ public class GenericJdbcDataWriter{
         public int[] writeData(List<T> entityList) {
             final List<T> finalEntityList = entityList;
             String sql = DataWriterUtils.genericInsertSql(entityList.get(0).getClass());
-            System.out.println(sql);
             BatchPreparedStatementSetter setter = new BatchPreparedStatementSetter() {
                 @Override
                 public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -85,7 +82,12 @@ public class GenericJdbcDataWriter{
                             try {
                                 String funcName = generateGetFunc(fields[j].getName());
                                 Method getter = o.getClass().getMethod(funcName, null);
-                                ps.setString(j+1, (String) getter.invoke(o, null));
+                                String getResult = (String) getter.invoke(o, null);
+                                if(getResult != null) {
+                                    ps.setString(j + 1, getResult);
+                                }else{
+                                    ps.setNull(j+1, Types.VARCHAR);
+                                }
                             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                                 e.printStackTrace();
                             }
@@ -94,9 +96,13 @@ public class GenericJdbcDataWriter{
                         if(fields[j].getGenericType().getTypeName().equals("java.lang.Integer")){
                             try {
                                 String funcName = generateGetFunc(fields[j].getName());
-                                System.out.println(funcName);
                                 Method getter = o.getClass().getMethod(funcName, null);
-                                ps.setInt(j+1, (Integer) getter.invoke(o, null));
+                                Integer getResult = (Integer) getter.invoke(o, null);
+                                if(getResult != null) {
+                                    ps.setInt(j + 1, getResult);
+                                }else {
+                                    ps.setNull(j + 1, Types.INTEGER);
+                                }
                             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                                 e.printStackTrace();
                             }
@@ -106,11 +112,32 @@ public class GenericJdbcDataWriter{
                             try {
                                 String funcName = generateGetFunc(fields[j].getName());
                                 Method getter = o.getClass().getMethod(funcName, null);
-                                ps.setDate(j+1, (Date) getter.invoke(o, null));
+                                Date getResult = (Date) getter.invoke(o, null);
+                                if(getResult != null) {
+                                    ps.setDate(j + 1, getResult);
+                                }else {
+                                    ps.setNull(j + 1, Types.DATE);
+                                }
                             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                                 e.printStackTrace();
                             }
                         }
+
+                        if(fields[j].getGenericType().getTypeName().equals("java.sql.Timestamp")){
+                            try {
+                                String funcName = generateGetFunc(fields[j].getName());
+                                Method getter = o.getClass().getMethod(funcName, null);
+                                Timestamp getResult = (Timestamp) getter.invoke(o, null);
+                                if(getResult != null) {
+                                    ps.setTimestamp(j + 1, getResult);
+                                }else {
+                                    ps.setNull(j + 1, Types.DATE);
+                                }
+                            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                     }
                 }
 

@@ -2,16 +2,18 @@ package com.casualsource.casualcrawler.datawriter;
 
 import com.casualsource.casualcrawler.datawriter.DataWriterImpl.DataWriters;
 import com.casualsource.casualcrawler.datawriter.DataWriterImpl.JdbcWriterEtc.DataBaseInfo;
+
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+@Ignore
 public class TestAllClass {
     DataBaseInfo dataBaseInfo;
     List<PttBean> beans = new ArrayList<>();

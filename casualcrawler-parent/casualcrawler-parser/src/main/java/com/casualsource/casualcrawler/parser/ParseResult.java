@@ -16,4 +16,12 @@ public class ParseResult {
     public String getText(){
         return this.element.text();
     }
+
+    public String getPureText(){
+        return this.element.ownText();
+    }
+
+    public ParseResult getChild(int child){
+        return new ParseResult(this.element.child(child));
+    }
 }

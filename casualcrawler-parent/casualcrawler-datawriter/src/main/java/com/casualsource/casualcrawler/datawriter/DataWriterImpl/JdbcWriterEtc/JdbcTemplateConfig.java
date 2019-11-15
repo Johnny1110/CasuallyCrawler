@@ -46,4 +46,5 @@ public class JdbcTemplateConfig {
     public static void setPassword(String password) {
         JdbcTemplateConfig.password = password;
     }
+
 }

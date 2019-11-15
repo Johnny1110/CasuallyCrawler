@@ -2,7 +2,7 @@ package com.casualsource.casualcrawler.parser;
 
 import java.util.List;
 
-interface HtmlParser {
+public interface HtmlParser {
     void setHtml(String html);
 
     void setCssSelector(String selctor);

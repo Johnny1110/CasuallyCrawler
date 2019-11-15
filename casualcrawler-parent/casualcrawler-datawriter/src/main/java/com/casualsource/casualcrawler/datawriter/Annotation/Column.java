@@ -9,9 +9,12 @@ public @interface Column {
         INTEGER,
         VARCHAR,
         DATE,
+        TEXT,
+        TIMESTAMP;
+        ;
     }
     String name();
     ColumnProperity properity();
-    int length() default 10;
+    int length() default 50;
 
 }
