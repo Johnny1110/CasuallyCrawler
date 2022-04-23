@@ -18,7 +18,7 @@
     </modules>
 
     <properties>
-        <springframework.version>5.1.5.RELEASE</springframework.version>
+        <springframework.version>5.3.19</springframework.version>
         <junit.version>4.12</junit.version>
         <httpclient.version>4.5.10</httpclient.version>
         <jsoup.version>1.12.1</jsoup.version>
